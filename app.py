@@ -25,10 +25,10 @@ def parse_hex(rgb_hex_str: str) -> tuple[float, float, float]:
         raise ValueError("Invalid hex color")
     return tuple(int(rgb_hex_str[i:i+2], 16) / 255 for i in (1, 3, 5))
 
-primary_color_rgb = parse_hex(primary_color)
-text_color_rgb = parse_hex(text_color)
-background_color_rgb = parse_hex(background_color)
-secondary_background_color_rgb = parse_hex(secondary_background_color)
+# primary_color_rgb = parse_hex(primary_color)
+# text_color_rgb = parse_hex(text_color)
+# background_color_rgb = parse_hex(background_color)
+# secondary_background_color_rgb = parse_hex(secondary_background_color)
 
 st.header("WCAG contrast ratio")
 
@@ -47,17 +47,17 @@ col1, col2, col3 = st.columns(3)
 with col1:
     synced_color_picker("Primary color", value=primary_color, key="primaryColor")
 with col2:
-    fragments.contrast_summary(primary_color_rgb, background_color_rgb)
+    fragments.contrast_summary(primary_color, background_color)
 with col3:
-    fragments.contrast_summary(primary_color_rgb, secondary_background_color_rgb)
+    fragments.contrast_summary(primary_color, secondary_background_color)
 
 col1, col2, col3 = st.columns(3)
 with col1:
     synced_color_picker("Text color", value=text_color, key="textColor")
 with col2:
-    fragments.contrast_summary(text_color_rgb, background_color_rgb)
+    fragments.contrast_summary(text_color, background_color)
 with col3:
-    fragments.contrast_summary(text_color_rgb, secondary_background_color_rgb)
+    fragments.contrast_summary(text_color, secondary_background_color)
 
 
 st.header("Config")

@@ -58,12 +58,14 @@ with col3:
 
 st.header("Config")
 
+st.markdown("`.streamlit/config.toml`")
 st.code(f"""
+[theme]
 primaryColor="{primary_color}"
 backgroundColor="{background_color}"
 secondaryBackgroundColor="{secondary_background_color}"
 textColor="{text_color}"
-""")
+""", language="toml")
 
 
 apply_theme = st.checkbox("Apply theme to this page")

@@ -1,4 +1,8 @@
+import re
+
 import streamlit as st
+
+import fragments
 
 if 'primaryColor' not in st.session_state:
     st.session_state['primaryColor'] = "#F63366"
@@ -10,38 +14,82 @@ if 'textColor' not in st.session_state:
     st.session_state['textColor'] = "#262730"
 
 
-def reconcile_theme_config():
-    keys = ['primaryColor', 'backgroundColor', 'secondaryBackgroundColor', 'textColor']
-    has_changed = False
-    for key in keys:
-        if st._config.get_option(f'theme.{key}') != st.session_state[key]:
-            st._config.set_option(f'theme.{key}', st.session_state[key])
-            has_changed = True
-    if has_changed:
-        st.experimental_rerun()
-
-
 primary_color = st.color_picker('Primary color', key="primaryColor")
-
+text_color = st.color_picker('Text color', key="textColor")
 background_color = st.color_picker('Background color', key="backgroundColor")
-
 secondary_background_color = st.color_picker('Secondary background color', key="secondaryBackgroundColor")
 
-text_color = st.color_picker('Text color', key="textColor")
 
-reconcile_theme_config()
+def parse_hex(rgb_hex_str: str) -> tuple[float, float, float]:
+    if not re.match(r"^#[0-9a-fA-F]{6}$", rgb_hex_str):
+        raise ValueError("Invalid hex color")
+    return tuple(int(rgb_hex_str[i:i+2], 16) / 255 for i in (1, 3, 5))
 
-st.code("""
-primaryColor="{primaryColor}"
-backgroundColor="{backgroundColor}"
-secondaryBackgroundColor="{secondaryBackgroundColor}}"
-textColor="{textColor}}"
+primary_color_rgb = parse_hex(primary_color)
+text_color_rgb = parse_hex(text_color)
+background_color_rgb = parse_hex(background_color)
+secondary_background_color_rgb = parse_hex(secondary_background_color)
+
+st.header("WCAG contrast ratio")
+
+col1, col2, col3 = st.columns(3)
+with col2:
+    def on_change():
+        st.session_state["backgroundColor"] = st.session_state["backgroundColor2"]
+    st.color_picker("Background color", value=background_color, key="backgroundColor2", on_change=on_change)
+with col3:
+    def on_change():
+        st.session_state["secondaryBackgroundColor"] = st.session_state["secondaryBackgroundColor2"]
+    st.color_picker("Secondary background color", value=secondary_background_color, key="secondaryBackgroundColor2", on_change=on_change)
+
+col1, col2, col3 = st.columns(3)
+with col1:
+    def on_change():
+        st.session_state["primaryColor"] = st.session_state["primaryColor2"]
+    st.color_picker("Primary color", value=primary_color, key="primaryColor2", on_change=on_change)
+with col2:
+    fragments.contrast_summary(primary_color_rgb, background_color_rgb)
+with col3:
+    fragments.contrast_summary(primary_color_rgb, secondary_background_color_rgb)
+
+col1, col2, col3 = st.columns(3)
+with col1:
+    def on_change():
+        st.session_state["textColor"] = st.session_state["textColor2"]
+    st.color_picker("Text color", value=text_color, key="textColor2", on_change=on_change)
+with col2:
+    fragments.contrast_summary(text_color_rgb, background_color_rgb)
+with col3:
+    fragments.contrast_summary(text_color_rgb, secondary_background_color_rgb)
+
+
+st.header("Config")
+
+st.code(f"""
+primaryColor="{primary_color}"
+backgroundColor="{background_color}"
+secondaryBackgroundColor="{secondary_background_color}"
+textColor="{text_color}"
 """)
 
 
-def sample_components(key: str):
-    st.slider("Slider", min_value=0, max_value=100, key=f"{key}:slider")
+apply_theme = st.checkbox("Apply theme to this page")
 
-sample_components("body")
+if apply_theme:
+    def reconcile_theme_config():
+        keys = ['primaryColor', 'backgroundColor', 'secondaryBackgroundColor', 'textColor']
+        has_changed = False
+        for key in keys:
+            if st._config.get_option(f'theme.{key}') != st.session_state[key]:
+                st._config.set_option(f'theme.{key}', st.session_state[key])
+                has_changed = True
+        if has_changed:
+            st.experimental_rerun()
+
+    reconcile_theme_config()
+
+
+
+fragments.sample_components("body")
 with st.sidebar:
-    sample_components("sidebar")
+    fragments.sample_components("sidebar")

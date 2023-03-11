@@ -32,21 +32,20 @@ secondary_background_color_rgb = parse_hex(secondary_background_color)
 
 st.header("WCAG contrast ratio")
 
+def synced_color_picker(label: str, value: str, key: str):
+    def on_change():
+        st.session_state[key] = st.session_state[key + "2"]
+    st.color_picker(label, value=value, key=key + "2", on_change=on_change)
+
 col1, col2, col3 = st.columns(3)
 with col2:
-    def on_change():
-        st.session_state["backgroundColor"] = st.session_state["backgroundColor2"]
-    st.color_picker("Background color", value=background_color, key="backgroundColor2", on_change=on_change)
+    synced_color_picker("Background color", value=background_color, key="backgroundColor")
 with col3:
-    def on_change():
-        st.session_state["secondaryBackgroundColor"] = st.session_state["secondaryBackgroundColor2"]
-    st.color_picker("Secondary background color", value=secondary_background_color, key="secondaryBackgroundColor2", on_change=on_change)
+    synced_color_picker("Secondary background color", value=secondary_background_color, key="secondaryBackgroundColor")
 
 col1, col2, col3 = st.columns(3)
 with col1:
-    def on_change():
-        st.session_state["primaryColor"] = st.session_state["primaryColor2"]
-    st.color_picker("Primary color", value=primary_color, key="primaryColor2", on_change=on_change)
+    synced_color_picker("Primary color", value=primary_color, key="primaryColor")
 with col2:
     fragments.contrast_summary(primary_color_rgb, background_color_rgb)
 with col3:
@@ -54,9 +53,7 @@ with col3:
 
 col1, col2, col3 = st.columns(3)
 with col1:
-    def on_change():
-        st.session_state["textColor"] = st.session_state["textColor2"]
-    st.color_picker("Text color", value=text_color, key="textColor2", on_change=on_change)
+    synced_color_picker("Text color", value=text_color, key="textColor")
 with col2:
     fragments.contrast_summary(text_color_rgb, background_color_rgb)
 with col3:

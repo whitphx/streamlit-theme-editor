@@ -5,13 +5,13 @@ import streamlit as st
 import fragments
 
 if 'primaryColor' not in st.session_state:
-    st.session_state['primaryColor'] = "#F63366"
+    st.session_state['primaryColor'] = st._config.get_option(f'theme.primaryColor') or "#F63366"
 if 'backgroundColor' not in st.session_state:
-    st.session_state['backgroundColor'] = "#FFFFFF"
+    st.session_state['backgroundColor'] = st._config.get_option(f'theme.backgroundColor') or "#FFFFFF"
 if 'secondaryBackgroundColor' not in st.session_state:
-    st.session_state['secondaryBackgroundColor'] = "#F0F2F6"
+    st.session_state['secondaryBackgroundColor'] = st._config.get_option(f'theme.secondaryBackgroundColor') or "#F0F2F6"
 if 'textColor' not in st.session_state:
-    st.session_state['textColor'] = "#262730"
+    st.session_state['textColor'] = st._config.get_option(f'theme.textColor') or "#262730"
 
 
 primary_color = st.color_picker('Primary color', key="primaryColor")

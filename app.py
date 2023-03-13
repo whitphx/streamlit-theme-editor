@@ -1,17 +1,33 @@
 import re
+from typing import NamedTuple
 
 import streamlit as st
 
 import fragments
 
+class ThemeColor(NamedTuple):
+    primaryColor: str
+    backgroundColor: str
+    secondaryBackgroundColor: str
+    textColor: str
+
+
+default_color = ThemeColor(
+    primaryColor="#ff4b4b",
+    backgroundColor="#ffffff",
+    secondaryBackgroundColor="#f0f2f6",
+    textColor="#31333F",
+)
+
+
 if 'primaryColor' not in st.session_state:
-    st.session_state['primaryColor'] = st._config.get_option(f'theme.primaryColor') or "#ff4b4b"
+    st.session_state['primaryColor'] = st._config.get_option(f'theme.primaryColor') or default_color.primaryColor
 if 'backgroundColor' not in st.session_state:
-    st.session_state['backgroundColor'] = st._config.get_option(f'theme.backgroundColor') or "#ffffff"
+    st.session_state['backgroundColor'] = st._config.get_option(f'theme.backgroundColor') or default_color.backgroundColor
 if 'secondaryBackgroundColor' not in st.session_state:
-    st.session_state['secondaryBackgroundColor'] = st._config.get_option(f'theme.secondaryBackgroundColor') or "#f0f2f6"
+    st.session_state['secondaryBackgroundColor'] = st._config.get_option(f'theme.secondaryBackgroundColor') or default_color.secondaryBackgroundColor
 if 'textColor' not in st.session_state:
-    st.session_state['textColor'] = st._config.get_option(f'theme.textColor') or "#31333F"
+    st.session_state['textColor'] = st._config.get_option(f'theme.textColor') or default_color.textColor
 
 
 primary_color = st.color_picker('Primary color', key="primaryColor")

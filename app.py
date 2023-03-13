@@ -12,12 +12,22 @@ class ThemeColor(NamedTuple):
     textColor: str
 
 
-default_color = ThemeColor(
-    primaryColor="#ff4b4b",
-    backgroundColor="#ffffff",
-    secondaryBackgroundColor="#f0f2f6",
-    textColor="#31333F",
-)
+preset_colors: list[tuple[str, ThemeColor]] = [
+    ("Default light", ThemeColor(
+            primaryColor="#ff4b4b",
+            backgroundColor="#ffffff",
+            secondaryBackgroundColor="#f0f2f6",
+            textColor="#31333F",
+        )),
+    ("Default dark", ThemeColor(
+            primaryColor="#ff4b4b",
+            backgroundColor="#0e1117",
+            secondaryBackgroundColor="#262730",
+            textColor="#fafafa",
+    ))
+]
+
+default_color = preset_colors[0][1]
 
 
 if 'primaryColor' not in st.session_state:
@@ -28,6 +38,17 @@ if 'secondaryBackgroundColor' not in st.session_state:
     st.session_state['secondaryBackgroundColor'] = st._config.get_option(f'theme.secondaryBackgroundColor') or default_color.secondaryBackgroundColor
 if 'textColor' not in st.session_state:
     st.session_state['textColor'] = st._config.get_option(f'theme.textColor') or default_color.textColor
+
+
+def on_preset_color_selected():
+    _, color = preset_colors[st.session_state.preset_color]
+    st.session_state['primaryColor'] = color.primaryColor
+    st.session_state['backgroundColor'] = color.backgroundColor
+    st.session_state['secondaryBackgroundColor'] = color.secondaryBackgroundColor
+    st.session_state['textColor'] = color.textColor
+
+
+st.selectbox("Preset colors", key="preset_color", options=range(len(preset_colors)), format_func=lambda idx: preset_colors[idx][0], on_change=on_preset_color_selected)
 
 
 primary_color = st.color_picker('Primary color', key="primaryColor")

@@ -64,6 +64,9 @@ def parse_hex(rgb_hex_str: str) -> tuple[float, float, float]:
 
 
 st.header("WCAG contrast ratio")
+st.markdown("""
+Check if the color contrasts of the selected colors are enough to the WCAG guidelines recommendation.
+For the details about it, see some resources such as the [WCAG document](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html) or the [MDN page](https://developer.mozilla.org/en-US/docs/Web/Accessibility/Understanding_WCAG/Perceivable/Color_contrast).""")
 
 def synced_color_picker(label: str, value: str, key: str):
     def on_change():
@@ -96,7 +99,6 @@ with col3:
 st.header("Config")
 
 st.subheader("Config file (`.streamlit/config.toml`)")
-# st.markdown("`.streamlit/config.toml`")
 st.code(f"""
 [theme]
 primaryColor="{primary_color}"

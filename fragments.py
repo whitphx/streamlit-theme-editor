@@ -23,4 +23,5 @@ def contrast_summary(label: str, foreground_rgb_hex: str, background_rgb_hex: st
 
 
 def sample_components(key: str):
+    st.header("Sample components")
     st.slider("Slider", min_value=0, max_value=100, key=f"{key}:slider")

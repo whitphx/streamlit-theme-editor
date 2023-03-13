@@ -40,6 +40,8 @@ if 'textColor' not in st.session_state:
     st.session_state['textColor'] = st._config.get_option(f'theme.textColor') or default_color.textColor
 
 
+st.title("Streamlit color theme editor")
+
 def on_preset_color_selected():
     _, color = preset_colors[st.session_state.preset_color]
     st.session_state['primaryColor'] = color.primaryColor

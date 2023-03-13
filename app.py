@@ -95,7 +95,8 @@ with col3:
 
 st.header("Config")
 
-st.markdown("`.streamlit/config.toml`")
+st.subheader("Config file (`.streamlit/config.toml`)")
+# st.markdown("`.streamlit/config.toml`")
 st.code(f"""
 [theme]
 primaryColor="{primary_color}"
@@ -103,6 +104,15 @@ backgroundColor="{background_color}"
 secondaryBackgroundColor="{secondary_background_color}"
 textColor="{text_color}"
 """, language="toml")
+
+st.subheader("Command line argument")
+st.code(f"""
+streamlit run app.py \\
+    --theme.primaryColor="{primary_color}" \\
+    --theme.backgroundColor="{background_color}" \\
+    --theme.secondaryBackgroundColor="{secondary_background_color}" \\
+    --theme.textColor="{text_color}"
+""")
 
 
 apply_theme = st.checkbox("Apply theme to this page")

@@ -27,17 +27,33 @@ preset_colors: list[tuple[str, ThemeColor]] = [
     ))
 ]
 
+if 'theme_from_initial_config' not in st.session_state:
+    config_theme_primaryColor = st._config.get_option(f'theme.primaryColor')
+    config_theme_backgroundColor = st._config.get_option(f'theme.backgroundColor')
+    config_theme_secondaryBackgroundColor = st._config.get_option(f'theme.secondaryBackgroundColor')
+    config_theme_textColor = st._config.get_option(f'theme.textColor')
+    if config_theme_primaryColor and config_theme_backgroundColor and config_theme_secondaryBackgroundColor and config_theme_textColor:
+        st.session_state['theme_from_initial_config'] = ThemeColor(
+            primaryColor=config_theme_primaryColor,
+            backgroundColor=config_theme_backgroundColor,
+            secondaryBackgroundColor=config_theme_secondaryBackgroundColor,
+            textColor=config_theme_textColor,
+        )
+
+if 'theme_from_initial_config' in st.session_state:
+    preset_colors.append((
+        "From the config",
+        st.session_state['theme_from_initial_config'],
+    ))
+
 default_color = preset_colors[0][1]
 
 
-if 'primaryColor' not in st.session_state:
-    st.session_state['primaryColor'] = st._config.get_option(f'theme.primaryColor') or default_color.primaryColor
-if 'backgroundColor' not in st.session_state:
-    st.session_state['backgroundColor'] = st._config.get_option(f'theme.backgroundColor') or default_color.backgroundColor
-if 'secondaryBackgroundColor' not in st.session_state:
-    st.session_state['secondaryBackgroundColor'] = st._config.get_option(f'theme.secondaryBackgroundColor') or default_color.secondaryBackgroundColor
-if 'textColor' not in st.session_state:
-    st.session_state['textColor'] = st._config.get_option(f'theme.textColor') or default_color.textColor
+if 'preset_color' not in st.session_state or 'backgroundColor' not in st.session_state or 'secondaryBackgroundColor' not in st.session_state or 'textColor' not in st.session_state:
+    st.session_state['primaryColor'] = default_color.primaryColor
+    st.session_state['backgroundColor'] = default_color.backgroundColor
+    st.session_state['secondaryBackgroundColor'] = default_color.secondaryBackgroundColor
+    st.session_state['textColor'] = default_color.textColor
 
 
 st.title("Streamlit color theme editor")

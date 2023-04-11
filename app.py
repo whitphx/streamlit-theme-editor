@@ -137,9 +137,9 @@ streamlit run app.py \\
 """)
 
 
-apply_theme = st.checkbox("Apply theme to this page")
+if st.checkbox("Apply theme to this page"):
+    st.info("Select 'Custom Theme' in the settings dialog to see the effect")
 
-if apply_theme:
     def reconcile_theme_config():
         keys = ['primaryColor', 'backgroundColor', 'secondaryBackgroundColor', 'textColor']
         has_changed = False
@@ -152,8 +152,6 @@ if apply_theme:
 
     reconcile_theme_config()
 
-
-
-fragments.sample_components("body")
-with st.sidebar:
-    fragments.sample_components("sidebar")
+    fragments.sample_components("body")
+    with st.sidebar:
+        fragments.sample_components("sidebar")

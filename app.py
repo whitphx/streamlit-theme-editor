@@ -51,27 +51,8 @@ if 'theme_from_initial_config' in st.session_state:
 default_color = preset_colors[0][1]
 
 
-if 'preset_color' not in st.session_state or 'backgroundColor' not in st.session_state or 'secondaryBackgroundColor' not in st.session_state or 'textColor' not in st.session_state:
-    st.session_state['primaryColor'] = default_color.primaryColor
-    st.session_state['backgroundColor'] = default_color.backgroundColor
-    st.session_state['secondaryBackgroundColor'] = default_color.secondaryBackgroundColor
-    st.session_state['textColor'] = default_color.textColor
-
-
-st.title("Streamlit color theme editor")
-
-def on_preset_color_selected():
-    _, color = preset_colors[st.session_state.preset_color]
-    st.session_state['primaryColor'] = color.primaryColor
-    st.session_state['backgroundColor'] = color.backgroundColor
-    st.session_state['secondaryBackgroundColor'] = color.secondaryBackgroundColor
-    st.session_state['textColor'] = color.textColor
-
-
-st.selectbox("Preset colors", key="preset_color", options=range(len(preset_colors)), format_func=lambda idx: preset_colors[idx][0], on_change=on_preset_color_selected)
-
-
 def sync_rgb_to_hls(key: str):
+    # HLS states are necessary for the HLS sliders.
     rgb = util.parse_hex(st.session_state[key])
     hls = colorsys.rgb_to_hls(rgb[0], rgb[1], rgb[2])
     st.session_state[f"{key}H"] = round(hls[0] * 360)
@@ -87,16 +68,37 @@ def sync_hls_to_rgb(key: str):
     st.session_state[key] = f"#{round(r * 255):02x}{round(g * 255):02x}{round(b * 255):02x}"
 
 
+def set_color(key: str, color: str):
+    st.session_state[key] = color
+    sync_rgb_to_hls(key)
+
+
+if 'preset_color' not in st.session_state or 'backgroundColor' not in st.session_state or 'secondaryBackgroundColor' not in st.session_state or 'textColor' not in st.session_state:
+    set_color('primaryColor', default_color.primaryColor)
+    set_color('backgroundColor', default_color.backgroundColor)
+    set_color('secondaryBackgroundColor', default_color.secondaryBackgroundColor)
+    set_color('textColor', default_color.textColor)
+
+
+st.title("Streamlit color theme editor")
+
+
+def on_preset_color_selected():
+    _, color = preset_colors[st.session_state.preset_color]
+    set_color('primaryColor', color.primaryColor)
+    set_color('backgroundColor', color.backgroundColor)
+    set_color('secondaryBackgroundColor', color.secondaryBackgroundColor)
+    set_color('textColor', color.textColor)
+
+
+st.selectbox("Preset colors", key="preset_color", options=range(len(preset_colors)), format_func=lambda idx: preset_colors[idx][0], on_change=on_preset_color_selected)
+
 if st.button("🎨 Generate a random color scheme 🎲"):
     primary_color, text_color, basic_background, secondary_background = util.generate_color_scheme()
-    st.session_state['primaryColor'] = primary_color
-    st.session_state['backgroundColor'] = basic_background
-    st.session_state['secondaryBackgroundColor'] = secondary_background
-    st.session_state['textColor'] = text_color
-    sync_rgb_to_hls('primaryColor')
-    sync_rgb_to_hls('backgroundColor')
-    sync_rgb_to_hls('secondaryBackgroundColor')
-    sync_rgb_to_hls('textColor')
+    set_color('primaryColor', primary_color)
+    set_color('backgroundColor', basic_background)
+    set_color('secondaryBackgroundColor', secondary_background)
+    set_color('textColor', text_color)
 
 
 def color_picker(label: str, key: str, default_color: str, l_only: bool) -> None:

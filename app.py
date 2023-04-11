@@ -1,9 +1,11 @@
-import re
+import colorsys
 from typing import NamedTuple
 
 import streamlit as st
 
 import fragments
+
+import util
 
 class ThemeColor(NamedTuple):
     primaryColor: str
@@ -69,10 +71,10 @@ def on_preset_color_selected():
 st.selectbox("Preset colors", key="preset_color", options=range(len(preset_colors)), format_func=lambda idx: preset_colors[idx][0], on_change=on_preset_color_selected)
 
 
-primary_color = st.color_picker('Primary color', key="primaryColor")
-text_color = st.color_picker('Text color', key="textColor")
-background_color = st.color_picker('Background color', key="backgroundColor")
-secondary_background_color = st.color_picker('Secondary background color', key="secondaryBackgroundColor")
+primary_color = fragments.color_picker('Primary color', key="primaryColor", default_color=default_color.primaryColor)
+text_color = fragments.color_picker('Text color', key="textColor", default_color=default_color.textColor)
+background_color = fragments.color_picker('Background color', key="backgroundColor", default_color=default_color.backgroundColor)
+secondary_background_color = fragments.color_picker('Secondary background color', key="secondaryBackgroundColor", default_color=default_color.secondaryBackgroundColor)
 
 
 def parse_hex(rgb_hex_str: str) -> tuple[float, float, float]:

@@ -87,6 +87,18 @@ def sync_hls_to_rgb(key: str):
     st.session_state[key] = f"#{round(r * 255):02x}{round(g * 255):02x}{round(b * 255):02x}"
 
 
+if st.button("🎨 Generate a random color scheme 🎲"):
+    primary_color, text_color, basic_background, secondary_background = util.generate_color_scheme()
+    st.session_state['primaryColor'] = primary_color
+    st.session_state['backgroundColor'] = basic_background
+    st.session_state['secondaryBackgroundColor'] = secondary_background
+    st.session_state['textColor'] = text_color
+    sync_rgb_to_hls('primaryColor')
+    sync_rgb_to_hls('backgroundColor')
+    sync_rgb_to_hls('secondaryBackgroundColor')
+    sync_rgb_to_hls('textColor')
+
+
 def color_picker(label: str, key: str, default_color: str, l_only: bool) -> None:
     col1, col2 = st.columns([1, 3])
     with col1:

@@ -71,10 +71,10 @@ def on_preset_color_selected():
 st.selectbox("Preset colors", key="preset_color", options=range(len(preset_colors)), format_func=lambda idx: preset_colors[idx][0], on_change=on_preset_color_selected)
 
 
-primary_color = fragments.color_picker('Primary color', key="primaryColor", default_color=default_color.primaryColor)
-text_color = fragments.color_picker('Text color', key="textColor", default_color=default_color.textColor)
-background_color = fragments.color_picker('Background color', key="backgroundColor", default_color=default_color.backgroundColor)
-secondary_background_color = fragments.color_picker('Secondary background color', key="secondaryBackgroundColor", default_color=default_color.secondaryBackgroundColor)
+primary_color = fragments.color_picker('Primary color', key="primaryColor", default_color=default_color.primaryColor, l_only=True)
+text_color = fragments.color_picker('Text color', key="textColor", default_color=default_color.textColor, l_only=True)
+background_color = fragments.color_picker('Background color', key="backgroundColor", default_color=default_color.backgroundColor, l_only=True)
+secondary_background_color = fragments.color_picker('Secondary background color', key="secondaryBackgroundColor", default_color=default_color.secondaryBackgroundColor, l_only=True)
 
 
 def parse_hex(rgb_hex_str: str) -> tuple[float, float, float]:

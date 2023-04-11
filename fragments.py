@@ -6,7 +6,7 @@ import wcag_contrast_ratio as contrast
 import util
 
 
-def color_picker(label: str, key: str, default_color: str) -> None:
+def color_picker(label: str, key: str, default_color: str, l_only: bool) -> None:
     def on_color_change():
         rgb = util.parse_hex(st.session_state[key])
         hls = colorsys.rgb_to_hls(rgb[0], rgb[1], rgb[2])
@@ -27,9 +27,19 @@ def color_picker(label: str, key: str, default_color: str) -> None:
     with col2:
         r,g,b = util.parse_hex(default_color)
         h,l,s = colorsys.rgb_to_hls(r,g,b)
-        st.slider(f"H for {label}", key=f"{key}H", min_value=0, max_value=360, value=round(h * 360), format="%d°", label_visibility="collapsed", on_change=on_hls_change)
+        if l_only:
+            if f"{key}H" not in st.session_state:
+                st.session_state[f"{key}H"] = round(h * 360)
+        else:
+            st.slider(f"H for {label}", key=f"{key}H", min_value=0, max_value=360, value=round(h * 360), format="%d°", label_visibility="collapsed", on_change=on_hls_change)
+
         st.slider(f"L for {label}", key=f"{key}L", min_value=0, max_value=100, value=round(l * 100), format="%d%%", label_visibility="collapsed", on_change=on_hls_change)
-        st.slider(f"S for {label}", key=f"{key}S", min_value=0, max_value=100, value=round(s * 100), format="%d%%", label_visibility="collapsed", on_change=on_hls_change)
+
+        if l_only:
+            if f"{key}S" not in st.session_state:
+                st.session_state[f"{key}S"] = round(s * 100)
+        else:
+            st.slider(f"S for {label}", key=f"{key}S", min_value=0, max_value=100, value=round(s * 100), format="%d%%", label_visibility="collapsed", on_change=on_hls_change)
 
     return color
 

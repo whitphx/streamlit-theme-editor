@@ -24,4 +24,9 @@ def contrast_summary(label: str, foreground_rgb_hex: str, background_rgb_hex: st
 
 def sample_components(key: str):
     st.header("Sample components")
+    st.text_input("Text input", key=f"{key}:text_input")
     st.slider("Slider", min_value=0, max_value=100, key=f"{key}:slider")
+    st.button("Button", key=f"{key}:button")
+    st.checkbox("Checkbox", key=f"{key}:checkbox", value=True)
+    st.radio("Radio", options=["Option 1", "Option 2"], key=f"{key}:radio")
+    st.selectbox("Selectbox", options=["Option 1", "Option 2"], key=f"{key}:selectbox")

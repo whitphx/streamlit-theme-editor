@@ -71,10 +71,50 @@ def on_preset_color_selected():
 st.selectbox("Preset colors", key="preset_color", options=range(len(preset_colors)), format_func=lambda idx: preset_colors[idx][0], on_change=on_preset_color_selected)
 
 
-primary_color = fragments.color_picker('Primary color', key="primaryColor", default_color=default_color.primaryColor, l_only=True)
-text_color = fragments.color_picker('Text color', key="textColor", default_color=default_color.textColor, l_only=True)
-background_color = fragments.color_picker('Background color', key="backgroundColor", default_color=default_color.backgroundColor, l_only=True)
-secondary_background_color = fragments.color_picker('Secondary background color', key="secondaryBackgroundColor", default_color=default_color.secondaryBackgroundColor, l_only=True)
+def sync_rgb_to_hls(key: str):
+    rgb = util.parse_hex(st.session_state[key])
+    hls = colorsys.rgb_to_hls(rgb[0], rgb[1], rgb[2])
+    st.session_state[f"{key}H"] = round(hls[0] * 360)
+    st.session_state[f"{key}L"] = round(hls[1] * 100)
+    st.session_state[f"{key}S"] = round(hls[2] * 100)
+
+
+def sync_hls_to_rgb(key: str):
+    h = st.session_state[f"{key}H"]
+    l = st.session_state[f"{key}L"]
+    s = st.session_state[f"{key}S"]
+    r, g, b = colorsys.hls_to_rgb(h / 360, l / 100, s / 100)
+    st.session_state[key] = f"#{round(r * 255):02x}{round(g * 255):02x}{round(b * 255):02x}"
+
+
+def color_picker(label: str, key: str, default_color: str, l_only: bool) -> None:
+    col1, col2 = st.columns([1, 3])
+    with col1:
+        color = st.color_picker(label, key=key, on_change=sync_rgb_to_hls, kwargs={"key": key})
+    with col2:
+        r,g,b = util.parse_hex(default_color)
+        h,l,s = colorsys.rgb_to_hls(r,g,b)
+        if l_only:
+            if f"{key}H" not in st.session_state:
+                st.session_state[f"{key}H"] = round(h * 360)
+        else:
+            st.slider(f"H for {label}", key=f"{key}H", min_value=0, max_value=360, value=round(h * 360), format="%d°", label_visibility="collapsed", on_change=sync_hls_to_rgb, kwargs={"key": key})
+
+        st.slider(f"L for {label}", key=f"{key}L", min_value=0, max_value=100, value=round(l * 100), format="%d%%", label_visibility="collapsed", on_change=sync_hls_to_rgb, kwargs={"key": key})
+
+        if l_only:
+            if f"{key}S" not in st.session_state:
+                st.session_state[f"{key}S"] = round(s * 100)
+        else:
+            st.slider(f"S for {label}", key=f"{key}S", min_value=0, max_value=100, value=round(s * 100), format="%d%%", label_visibility="collapsed", on_change=sync_hls_to_rgb, kwargs={"key": key})
+
+    return color
+
+
+primary_color = color_picker('Primary color', key="primaryColor", default_color=default_color.primaryColor, l_only=True)
+text_color = color_picker('Text color', key="textColor", default_color=default_color.textColor, l_only=True)
+background_color = color_picker('Background color', key="backgroundColor", default_color=default_color.backgroundColor, l_only=True)
+secondary_background_color = color_picker('Secondary background color', key="secondaryBackgroundColor", default_color=default_color.secondaryBackgroundColor, l_only=True)
 
 
 def parse_hex(rgb_hex_str: str) -> tuple[float, float, float]:
@@ -91,6 +131,7 @@ For the details about it, see some resources such as the [WCAG document](https:/
 def synced_color_picker(label: str, value: str, key: str):
     def on_change():
         st.session_state[key] = st.session_state[key + "2"]
+        sync_rgb_to_hls(key)
     st.color_picker(label, value=value, key=key + "2", on_change=on_change)
 
 col1, col2, col3 = st.columns(3)

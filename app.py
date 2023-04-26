@@ -1,17 +1,10 @@
 import colorsys
-from typing import NamedTuple
 
 import streamlit as st
 
 import fragments
-
 import util
-
-class ThemeColor(NamedTuple):
-    primaryColor: str
-    backgroundColor: str
-    secondaryBackgroundColor: str
-    textColor: str
+from util import ThemeColor
 
 
 preset_colors: list[tuple[str, ThemeColor]] = [
@@ -29,24 +22,9 @@ preset_colors: list[tuple[str, ThemeColor]] = [
     ))
 ]
 
-if 'theme_from_initial_config' not in st.session_state:
-    config_theme_primaryColor = st._config.get_option(f'theme.primaryColor')
-    config_theme_backgroundColor = st._config.get_option(f'theme.backgroundColor')
-    config_theme_secondaryBackgroundColor = st._config.get_option(f'theme.secondaryBackgroundColor')
-    config_theme_textColor = st._config.get_option(f'theme.textColor')
-    if config_theme_primaryColor and config_theme_backgroundColor and config_theme_secondaryBackgroundColor and config_theme_textColor:
-        st.session_state['theme_from_initial_config'] = ThemeColor(
-            primaryColor=config_theme_primaryColor,
-            backgroundColor=config_theme_backgroundColor,
-            secondaryBackgroundColor=config_theme_secondaryBackgroundColor,
-            textColor=config_theme_textColor,
-        )
-
-if 'theme_from_initial_config' in st.session_state:
-    preset_colors.append((
-        "From the config",
-        st.session_state['theme_from_initial_config'],
-    ))
+theme_from_initial_config = util.get_config_theme_color()
+if theme_from_initial_config:
+    preset_colors.append(("From the config", theme_from_initial_config))
 
 default_color = preset_colors[0][1]
 

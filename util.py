@@ -1,8 +1,34 @@
 import re
 import random
 from colorsys import hls_to_rgb
+from typing import NamedTuple
 
+import streamlit as st
 import wcag_contrast_ratio as contrast
+
+
+class ThemeColor(NamedTuple):
+    primaryColor: str
+    backgroundColor: str
+    secondaryBackgroundColor: str
+    textColor: str
+
+
+@st.cache_resource
+def get_config_theme_color():
+    config_theme_primaryColor = st._config.get_option(f'theme.primaryColor')
+    config_theme_backgroundColor = st._config.get_option(f'theme.backgroundColor')
+    config_theme_secondaryBackgroundColor = st._config.get_option(f'theme.secondaryBackgroundColor')
+    config_theme_textColor = st._config.get_option(f'theme.textColor')
+    if config_theme_primaryColor and config_theme_backgroundColor and config_theme_secondaryBackgroundColor and config_theme_textColor:
+        return ThemeColor(
+            primaryColor=config_theme_primaryColor,
+            backgroundColor=config_theme_backgroundColor,
+            secondaryBackgroundColor=config_theme_secondaryBackgroundColor,
+            textColor=config_theme_textColor,
+        )
+
+    return None
 
 
 def parse_hex(rgb_hex_str: str) -> tuple[float, float, float]:

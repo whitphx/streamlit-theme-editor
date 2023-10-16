@@ -1,1 +1,2 @@
 wcag-contrast-ratio
+altair<5

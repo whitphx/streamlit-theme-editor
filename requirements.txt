@@ -1,2 +1,2 @@
+streamlit>=1.27.0
 wcag-contrast-ratio
-altair<5

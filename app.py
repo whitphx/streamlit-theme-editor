@@ -175,7 +175,7 @@ if st.checkbox("Apply theme to this page"):
                 st._config.set_option(f'theme.{key}', st.session_state[key])
                 has_changed = True
         if has_changed:
-            st.experimental_rerun()
+            st.rerun()
 
     reconcile_theme_config()
 
